@@ -24,15 +24,15 @@ In this case, $\Phi$ is given by
 ``` 
 This will be "the" $\Phi$ that we will implement, and we can just standardize the inputs to use it no matter what $\mu$ and $\sigma$ are. 
 
-Given its popularity, most programming languages have some efficient implementation of $\Phi$, e.g. `Python` or `C++`, 
-but not all! 
-The reason for writing about this topic is that `SQL` (specifically `PostgreSQL`) does **not** have its own implementation of $\Phi$. 
-If any queries involve computing $\Phi$ arise, you will need your own implementation. 
+Given its popularity, a lot of programming languages (e.g. `Python` or `R`) have an out-of-the-box implementation, which we will look at below. 
+Depending on the implementation, the function is either available on its own or as a method of a class, so you would choose depending on the situation. 
+Other languagues (e.g. `C++` or `Postgres`) *do not* have an implementation, so you would have to write one on your own. 
+You may be able to use some other ready functionality, or have to do it completely from scratch. 
 
-That being said, in the rest of this post we will do the following: 
+<!-- That being said, in the rest of this post we will do the following: 
 - Review current implementations
 - Derive a fast algorithm for computing $\Phi$ 
-- Implement and compare performance (both accuracy and speed) 
+- Implement and compare performance (both accuracy and speed)  -->
 
 
 
@@ -40,44 +40,47 @@ That being said, in the rest of this post we will do the following:
 
 ### Python 
 
-There are two good `Python` implementations I was able to find. 
-
-First, 
-
-```python
-from statistics import NormalDist 
-
-x_vals: list[float] = [-3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0]
-cdf_vals = [NormalDist().cdf(x_val) for x_val in x_vals] 
-
-"""
-Using NormalDist from statistics: 
- -3.0: 0.0013499
- -2.0: 0.0227501
- -1.0: 0.1586553
-  0.0: 0.5000000
-  1.0: 0.8413447
-  2.0: 0.9772499
-  3.0: 0.9986501
-"""
-```
-
-The `scipy.stats` module has a `norm` class that contains a `cdf` method. 
+The `scipy` modules contains a `scipy.stats.norm` object that can compute the CDF. 
+It takes in a list of values and computes the CDF like this: 
 
 ```python
-from scipy.stats import norm # has cdf 
+x_vals: list[float] = [-3.0 + (n * 0.01) for n in range(0, 602)] # values from -3.0 to 3.0 
 
-x_vals: list[float] = [-3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0]
-cdf_vals = norm.cdf(x_vals)
+import numpy as np 
+from scipy.stats import norm as Norm 
 
-"""
-Using norm from scipy.stats: 
- -3.0: 0.0013499
- -2.0: 0.0227501
- -1.0: 0.1586553
-  0.0: 0.5000000
-  1.0: 0.8413447
-  2.0: 0.9772499
-  3.0: 0.9986501
-"""
+_: np.ndarray = Norm.cdf(x_vals)
 ```
+
+Python also has an implementation via the `NormDist` class from the native `statistics` module. 
+You can initialize a class and then use list comprehension to compute the values: 
+
+```python
+from statistics import NormalDist
+
+norm: NormalDist = NormalDist(0.0, 1.0) 
+_: list[float] = [norm.cdf(x_val) for x_val in x_vals] 
+```
+
+As an aside, with the setup I did, it seems that the `statistics` method works a bit faster: 
+
+```bash
+$ py implementations.py 
+Testing normal distribution on 602 values stored in a list of floats ... 
+Time of imp01_scipy: 630,600 ns
+Time of imp02_statistics: 324,100 ns
+```
+
+But this was not a rigorous test; point is, Python has a few ways you can compute this on your own. 
+
+
+
+## Implementing ourselves 
+
+Now comes the fun part: we want to write an implementation of this on our own. 
+For simplicity, our function will only compute $\Phi$ for a single number, without trying to do anything fancy with vectorization. 
+Let's try using `C++`. 
+
+`C++` has many built-in math functions in the `cmath` header, which we can try to utilize first. 
+From the [official documentation](https://en.cppreference.com/w/cpp/header/cmath), there is an implementation of the $\mathrm{Erf}$ function that can be useful. 
+
