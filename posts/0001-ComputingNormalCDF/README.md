@@ -12,11 +12,6 @@ the normal CDF is given by
 ```math
 \Phi(x; \mu, \sigma) = \frac{1}{\sigma \sqrt{2 \pi}} \int_{-\infty}^{x} \mathrm{exp} \left( - \frac{(t - \mu)^2}{2 \sigma^2} \right) \,\mathrm{d}t.
 ```
-<!-- ![\Large x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}](https://latex.codecogs.com/svg.latex?\Large&space;x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}) -->
-<!-- ![\Large
-\Phi(x; \mu, \sigma)
-= \frac{1}{\sigma \sqrt{2 \pi}} \int_{-\infty}^{x} \mathrm{exp} \left( - \frac{(t - \mu)^2}{2 \sigma^2} \right) \,\mathrm{d}t. 
-](https://latex.codecogs.com/svg.latex?\Large&space;\Phi(x;\mu,\sigma)=\frac{1}{\sigma\sqrt{2\pi}}\int_{-\infty}^{x}\mathrm{exp}\left(-\frac{(t-\mu)^2}{2\sigma^2}\right)\,\mathrm{d}t.) -->
 This integral generally has no closed-form solution, 
 so we have to compute $\Phi$ using some numerical scheme. 
 
@@ -24,7 +19,9 @@ As a reminder, for any r.v. $X \sim \mathrm{N}(\mu, \sigma)$,
 by *standardizing* we have $(X - \mu) / \sigma = Z$, 
 where $Z \sim \mathrm{N}(0, 1)$ is the standard normal distribution. 
 In this case, $\Phi$ is given by 
-$$ \Phi(x) = \frac{1}{\sqrt{2 \pi}} \int_{-\infty}^{x} \mathrm{exp} \left( - \frac{t^2}{2} \right) \,\mathrm{d}t. $$
+```math
+\Phi(x) = \frac{1}{\sqrt{2 \pi}} \int_{-\infty}^{x} \mathrm{exp} \left( - \frac{t^2}{2} \right) \,\mathrm{d}t.
+``` 
 This will be "the" $\Phi$ that we will implement, and we can just standardize the inputs to use it no matter what $\mu$ and $\sigma$ are. 
 
 Given its popularity, most programming languages have some efficient implementation of $\Phi$, e.g. `Python` or `C++`, 
