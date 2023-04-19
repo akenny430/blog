@@ -36,7 +36,7 @@ You may be able to use some other ready functionality, or have to do it complete
 
 
 
-## Current implementations 
+## Built-In
 
 ### Python 
 
@@ -75,12 +75,40 @@ But this was not a rigorous test; point is, Python has a few ways you can comput
 
 
 
-## Implementing ourselves 
+## Implementation 
 
 Now comes the fun part: we want to write an implementation of this on our own. 
 For simplicity, our function will only compute $\Phi$ for a single number, without trying to do anything fancy with vectorization. 
 Let's try using `C++`. 
 
 `C++` has many built-in math functions in the `cmath` header, which we can try to utilize first. 
-From the [official documentation](https://en.cppreference.com/w/cpp/header/cmath), there is an implementation of the $\mathrm{Erf}$ function that can be useful. 
+From the [official documentation](https://en.cppreference.com/w/cpp/header/cmath), 
+there is an implementation of the $\mathrm{Erf}$ and $\mathrm{Erfc}$ functions that can be useful. 
 
+The *error function* $\mathrm{Erf}$ is given by 
+```math
+\mathrm{Erf}(x) 
+\coloneqq \frac{2}{\sqrt{\pi}} \int_{0}^{x} \mathrm{exp} \left(- t^2 \right) \,\mathrm{d}t 
+```
+for all $x \in \mathbb{R}$. 
+Note that this function is symmetric, i.e. $\mathrm{Erf}(-x) = - \mathrm{Erf}(x)$. 
+The *complimentary error function* $\mathrm{Erfc}(x)$ is given by 
+$\mathrm{Erfc}(x) \coloneqq 1 - \mathrm{Erf}(x)$; 
+due to symmetry, we have $\mathrm{Erfc}(-x) = 1 - \mathrm{Erf}(-x) = 1 + \mathrm{Erf}(-x)$. 
+
+So, to use this to compute $\Phi(x)$, we can use a change in variable ($u \coloneqq t / \sqrt{2}$) and some more algebra: 
+```math
+\Phi(x) 
+= \frac{1}{\sqrt{2 \pi}} \int_{-\infty}^{x} \mathrm{exp} \left( - \frac{t^2}{2} \right) \,\mathrm{d}t 
+= \frac{1}{2} + \frac{1}{\sqrt{2 \pi}} \int_{0}^{x} \mathrm{exp} \left( - \frac{t^2}{2} \right) \,\mathrm{d}t 
+= \frac{1}{2} + \frac{1}{\sqrt{2 \pi}} \int_{0}^{x / \sqrt{2}} \mathrm{exp} \left( - u^2 \right) \cdot \sqrt{2} \,\mathrm{d}t 
+= \frac{1}{2} + \frac{1}{\sqrt{\pi}} \int_{0}^{x / \sqrt{2}} \mathrm{exp} \left( - u^2 \right) \,\mathrm{d}t 
+= \frac{1}{2} \left( 1 + \frac{2}{\sqrt{\pi}} \int_{0}^{x / \sqrt{2}} \mathrm{exp} \left( - u^2 \right) \,\mathrm{d}t \right)
+= \frac{1}{2} \left( 1 + \mathrm{Erf}(x / \sqrt{2}) \right)
+= \frac{1}{2} \mathrm{Erfc}(- x / \sqrt{2}).
+```
+This results in the relation: 
+```math
+\Phi(x) 
+= \frac{1}{2} \cdot \mathrm{Erfc} \left( - \frac{x}{\sqrt{2}} \right). 
+```
