@@ -1,4 +1,9 @@
-#! /usr/bin/env zsh
+#! /usr/bin/env bash
+
+case $OSTYPE in 
+    'darwin22.0') compiler='clang++' ;; #  macbook 
+    'msys') compiler='g++' ;; # coofun 
+esac 
 
 echo "Compiling C++ implementations ..."
-clang++ -std=c++2a implementations.cpp -O3 -o impcpp
+$compiler -std=c++20 -O3 -Wall implementations.cpp -o impcpp
