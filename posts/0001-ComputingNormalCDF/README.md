@@ -127,8 +127,8 @@ Doing 1. is interesting; it gives rise to a recursive pattern in the derivatives
 But computationally, it is not as useful. 
 
 <figure align="center">
-    <!-- <img src="./results/cpp_plot.svg" alt="Results of Taylor Series implementation" width="75%"/> -->
-    <img src="./results/cpp_plot.png" alt="Results of Taylor Series implementation" width="75%"/>
+    <img src="./results/cpp_plot.svg" alt="Results of Taylor Series implementation" width="75%"/>
+    <!-- <img src="./results/cpp_plot.png" alt="Results of Taylor Series implementation" width="75%"/> -->
     <!-- <img src="https://raw.githubusercontent.com/akenny430/blog/posts/0001-ComputingNormalCDF/results/cpp_plot.svg" alt="Results of Taylor Series implementation" width="75%"/> -->
     <!-- <figcaption> 
         Box plots of the results from each of the three tests. 
