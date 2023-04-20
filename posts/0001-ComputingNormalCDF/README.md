@@ -126,4 +126,9 @@ We have two ways to go about this:
 Doing 1. is interesting; it gives rise to a recursive pattern in the derivatives (that I may write another post about). 
 But computationally, it is not as useful. 
 
-![Taylor Series](/posts/0001-ComputingNormalCDF/results/cpp_plot.svg)
+<figure>
+    <img src="./results/cpp_plot.svg" alt="Results of Taylor Series implementation" width="75%"/>
+    <!-- <figcaption> 
+        Box plots of the results from each of the three tests. 
+    </figcaption> -->
+</figure>
