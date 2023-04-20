@@ -159,7 +159,7 @@ Using this, we can show that
 ```
 At face value this looks a little messy, but it actually is nice because the terms of the series can be derived via recursion. 
 If we let $a_k(x)$ represent the $k^{\mathrm{th}}$ term in the series, we have 
-```
+```math
 a_k(x) = 
 \begin{cases}
 x & k = 0 \\
@@ -195,9 +195,9 @@ auto normalCDF_v2(normal_t x, std::size_t N = 5) -> normal_t
 
 If we want to test the accuracy of using Taylor series for $\Phi$, we can plot the values for different values of $N$ 
 and compare that to $\mathrm{Erfc}$. I tested the values $N = 5, 10, 15, 20, 30$ over a grid of inputs in the interval $[-3, 3]$: 
-<figure>
+<h1 align="center">
     <img src="./results/cpp_plot.svg" alt="Results of Taylor Series implementation" width="75%", class="center"/>
-</figure>
+</h1>
 
 We see that even after only 15 terms, the difference between the Taylor series and $\mathrm{Erfc}$ is very small. 
 
