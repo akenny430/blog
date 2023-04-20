@@ -22,7 +22,7 @@ In this case, $\Phi$ is given by
 ```math
 \Phi(x) = \frac{1}{\sqrt{2 \pi}} \int_{-\infty}^{x} \mathrm{exp} \left( - \frac{t^2}{2} \right) \,\mathrm{d}t.
 ``` 
-This will be "the" $\Phi$ that we will implement, and we can just standardize the inputs to use it no matter what $\mu$ and $\sigma$ are. 
+This will be "the" $\Phi$ that we will implement, and we can just scale the result to use it for any $\mu$ and $\sigma$. 
 
 Given its popularity, a lot of programming languages (e.g. `Python` or `R`) have an out-of-the-box implementation, which we will look at below. 
 Depending on the implementation, the function is either available on its own or as a method of a class, so you would choose depending on the situation. 
@@ -81,6 +81,8 @@ Now comes the fun part: we want to write an implementation of this on our own.
 For simplicity, our function will only compute $\Phi$ for a single number, without trying to do anything fancy with vectorization. 
 Let's try using `C++`. 
 
+### Using $\mathrm{Erf}(x)$ and $\mathrm{Erfc}(x)$ 
+
 `C++` has many built-in math functions in the `cmath` header, which we can try to utilize first. 
 From the [official documentation](https://en.cppreference.com/w/cpp/header/cmath), 
 there is an implementation of the $\mathrm{Erf}$ and $\mathrm{Erfc}$ functions that can be useful. 
@@ -92,6 +94,7 @@ The *error function* $\mathrm{Erf}$ is given by
 ```
 for all $x \in \mathbb{R}$. 
 Note that this function is symmetric, i.e. $\mathrm{Erf}(-x) = - \mathrm{Erf}(x)$. 
+
 The *complimentary error function* $\mathrm{Erfc}(x)$ is given by 
 $\mathrm{Erfc}(x) \coloneqq 1 - \mathrm{Erf}(x)$; 
 due to symmetry, we have $\mathrm{Erfc}(-x) = 1 - \mathrm{Erf}(-x) = 1 + \mathrm{Erf}(-x)$. 
@@ -112,3 +115,15 @@ This results in the relation:
 \Phi(x) 
 = \frac{1}{2} \cdot \mathrm{Erfc} \left( - \frac{x}{\sqrt{2}} \right). 
 ```
+
+### Using Taylor Series 
+
+One common method of evaluating non-elementary functions such as $\Phi$ is to use a Taylor series expansion. 
+We have two ways to go about this: 
+1. Take the Taylor series of $\Phi$ directly. 
+2. Take the Taylor series of some part of $\Phi$ and use it to simplify. 
+
+Doing 1. is interesting; it gives rise to a recursive pattern in the derivatives (that I may write another post about). 
+But computationally, it is not as useful. 
+
+![Taylor Series](/results/cpp_plot.png)
