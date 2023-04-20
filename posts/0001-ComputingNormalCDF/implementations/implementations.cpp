@@ -20,33 +20,52 @@ auto get_vals(double min = -3.0, double max = 3.0, double delta = 0.01) -> std::
     }
     return x_vals; 
 }
-// std::array<normal_t, 7> x_vals = {-3.0}; 
+
+
 
 // constexpr double SQRT_HALF = std::sqrt(0.5); 
 constexpr normal_t SQRT_HALF = 0.70710678118; 
 /**
- * Implementing normal CDF using Erfc function 
+ * Normal CDF using Erfc function 
 */
 auto normalCDF_v1(normal_t x) -> normal_t
 {
     return 0.5 * std::erfc(- SQRT_HALF * x); 
 }
 
-auto imp01_UsingErfc() -> void
+/**
+ * Normal CDF using Taylor Series about 0
+ * 
+*/
+// constexpr normal_t ONE_DIV_SQRT_TWO_PI = 1.0 / std::sqrt(2.0 * std::pi)
+constexpr normal_t ONE_DIV_SQRT_TWO_PI = 0.39894228; 
+auto normalCDF_v2(normal_t x, std::size_t N = 5) -> normal_t
+{
+    // if N < 0 we have error 
+    if(N == 0){return 0.5 + (ONE_DIV_SQRT_TWO_PI * x);} 
+    normal_t term = x; 
+    normal_t total = x; 
+    for(std::size_t k = 1; k <= N; ++k)
+    {
+        term *= - ((k - 0.5) * x * x) / (2.0 * k * (k + 0.5));
+        total += term;  
+    } 
+    return 0.5 + (ONE_DIV_SQRT_TWO_PI * total); 
+}
+
+auto test_cdf() -> void
 {
     std::vector<normal_t> x_vals = get_vals(); 
     for (const auto& x : x_vals)
     {
         // std::cout << x << ": " << std::normal_distribution
-        std::cout << x << ": " << normalCDF_v1(x) << '\n'; 
+        std::cout << x << ": " << normalCDF_v1(x) << ", " << normalCDF_v2(x, 15) << '\n'; 
     }
     return; 
 }
 
 auto main() -> int 
 {
-    auto junk = get_vals(); 
-    imp01_UsingErfc(); 
-    std::cout << junk[0] << ", " << junk[1] << ", ..., " << junk.back() << '\n';  
+    test_cdf(); 
     return 0; 
 }
