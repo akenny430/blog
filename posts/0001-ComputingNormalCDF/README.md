@@ -126,4 +126,4 @@ We have two ways to go about this:
 Doing 1. is interesting; it gives rise to a recursive pattern in the derivatives (that I may write another post about). 
 But computationally, it is not as useful. 
 
-![Taylor Series](/posts/0001-ComputingNormalCDF/results/cpp_plot.png)
+![Taylor Series](/posts/0001-ComputingNormalCDF/results/cpp_plot.svg)
