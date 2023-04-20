@@ -8,7 +8,6 @@ One of the most fundamental computations in all of probability and statistics is
 computing the CDF of a normal distribution. 
 For a normal random variable $X$ with mean $\mu$ and standard deviation $\sigma$, i.e. $X \sim \mathrm{N}(\mu, \sigma)$, 
 the normal CDF is given by 
-<!-- $$ \Phi(x; \mu, \sigma) = \frac{1}{\sigma \sqrt{2 \pi}} \int_{-\infty}^{x} \mathrm{exp} \left( - \frac{(t - \mu)^2}{2 \sigma^2} \right) \,\mathrm{d}t. $$ -->
 ```math
 \Phi(x; \mu, \sigma) = \frac{1}{\sigma \sqrt{2 \pi}} \int_{-\infty}^{x} \mathrm{exp} \left( - \frac{(t - \mu)^2}{2 \sigma^2} \right) \,\mathrm{d}t.
 ```
@@ -81,6 +80,18 @@ Now comes the fun part: we want to write an implementation of this on our own.
 For simplicity, our function will only compute $\Phi$ for a single number, without trying to do anything fancy with vectorization. 
 Let's try using `C++`. 
 
+Throughout this section we will need to make use of following result: 
+```math
+\Phi(x) 
+% = \frac{1}{\sqrt{2 \pi}} \int_{-\infty}^{x} \mathrm{exp} \left( - \frac{t^2}{2} \right) \,\mathrm{d}t 
+= \frac{1}{2} + \frac{1}{\sqrt{2 \pi}} \int_{0}^{x} \mathrm{exp} \left( - \frac{t^2}{2} \right) \,\mathrm{d}t.
+```
+From a probability perspective, since $0$ is the halfway point along $\mathrm{R}$ and $\Phi$ is symmetric about this point, 
+we know all of the probability from $-\infty$ to $0$ is going to be $1 / 2$. 
+This has more to do with integrating (a modified) $\mathrm{e}^{-t^2}$, 
+its one of those cool things you learn about in multivariable calculus. 
+I put a review of this result, and the derivation, in Appendix. 
+
 ### Using $\mathrm{Erf}(x)$ and $\mathrm{Erfc}(x)$ 
 
 `C++` has many built-in math functions in the `cmath` header, which we can try to utilize first. 
@@ -99,6 +110,100 @@ The *complimentary error function* $\mathrm{Erfc}(x)$ is given by
 $\mathrm{Erfc}(x) \coloneqq 1 - \mathrm{Erf}(x)$; 
 due to symmetry, we have $\mathrm{Erfc}(-x) = 1 - \mathrm{Erf}(-x) = 1 + \mathrm{Erf}(-x)$. 
 
+It turns out that we can use the following relation to compute $\Phi(x)$ from $\mathrm{Erfc}(x)$:  
+```math
+\Phi(x) 
+= \frac{1}{2} \cdot \mathrm{Erfc} \left( - \frac{x}{\sqrt{2}} \right). 
+```
+A derivation of this can be found in Appendix A. 
+
+This is very easy to implement: 
+```C++
+
+using normal_t = double;
+
+constexpr normal_t SQRT_HALF = 0.70710678118; 
+auto normalCDF_v1(normal_t x) -> normal_t
+{
+    return 0.5 * std::erfc(- SQRT_HALF * x); 
+}
+```
+Because anything that's in the standard library will have been tested, we can be assured that these values are correct. 
+Going forward, we will use this implementation as the "ground truth" to which compare any other implementation. 
+
+### Using Taylor Series 
+
+One common method of evaluating non-elementary functions such as $\Phi$ is to use a Taylor series expansion. 
+We have two ways to go about this: 
+1. Take the Taylor series of $\Phi$ directly. 
+2. Take the Taylor series of some part of $\Phi$ and use it to simplify. 
+
+Doing 1) is interesting; it gives rise to a recursive pattern in the derivatives (that I may write another post about). 
+But computationally, it is not as useful. 
+So we instead will implement 2). 
+The general process will be to use the Taylor series for $\mathrm{exp}$, 
+plug that into $\Phi$, integrate each term, and then boom you have a new Taylor series for $\Phi$. 
+
+Recall that 
+```math
+\mathrm{exp}(x) 
+= \sum_{k=0}^{\infty} \frac{x^k}{k!}.
+```
+
+Using this, we can show that 
+```math
+\Phi(x) 
+= \frac{1}{2} + \frac{1}{\sqrt{2\pi}} \int_0^x \sum_{k=0}^{\infty} \frac{(-t^2 / 2)^k}{k!} \,\mathrm{d}t
+= \cdots 
+= \frac{1}{2} + \frac{1}{\sqrt{2\pi}} \sum_{k=0}^{\infty} \frac{(-1)^k x^{2k + 1}}{2^k k! (2k + 1)}. 
+```
+At face value this looks a little messy, but it actually is nice because the terms of the series can be derived via recursion. 
+If we let $a_k(x)$ represent the $k^{\mathrm{th}}$ term in the series, we have 
+```
+a_k(x) = 
+\begin{cases}
+x & k = 0 \\
+-\frac{(2k - 1) x^2}{2k(2k + 1)} \cdot a_{k - 1}(x) & k > 0
+\end{cases}.
+```
+
+One thing to note about Taylor series is that we need to specify some limit to how many terms we can have. 
+Even though theoretically the infinite series is identical to the function, we will only be able to approximate with $N$ terms, i.e. 
+$$
+\Phi(x) 
+\approx \frac{1}{2} + \frac{1}{\sqrt{2\pi}} \sum_{k=0}^{N} \frac{(-1)^k x^{2k + 1}}{2^k k! (2k + 1)}.
+$$
+As we increase $N$ the accuracy will improve, but it will take longer to compute. 
+A balance of both is necessary. 
+
+Here is an implementation: 
+```C++
+constexpr normal_t ONE_DIV_SQRT_TWO_PI = 0.39894228; 
+auto normalCDF_v2(normal_t x, std::size_t N = 5) -> normal_t
+{
+    if(N == 0){ return 0.5 + (ONE_DIV_SQRT_TWO_PI * x); } 
+    normal_t term = x; 
+    normal_t total = x; 
+    for(std::size_t k = 1; k <= N; ++k)
+    {
+        term *= - ((k - 0.5) * x * x) / (2.0 * k * (k + 0.5));
+        total += term;  
+    } 
+    return 0.5 + (ONE_DIV_SQRT_TWO_PI * total); 
+}
+```
+
+If we want to test the accuracy of using Taylor series for $\Phi$, we can plot the values for different values of $N$ 
+and compare that to $\mathrm{Erfc}$. I tested the values $N = 5, 10, 15, 20, 30$ over a grid of inputs in the interval $[-3, 3]$: 
+<figure>
+    <img src="./results/cpp_plot.svg" alt="Results of Taylor Series implementation" width="75%", class="center"/>
+</figure>
+
+We see that even after only 15 terms, the difference between the Taylor series and $\mathrm{Erfc}$ is very small. 
+
+
+<!-- ## Appendix 
+
 So, to use this to compute $\Phi(x)$, we can use a change in variable ($u \coloneqq t / \sqrt{2}$) and some more algebra: 
 ```math
 \Phi(x) 
@@ -114,23 +219,4 @@ This results in the relation:
 ```math
 \Phi(x) 
 = \frac{1}{2} \cdot \mathrm{Erfc} \left( - \frac{x}{\sqrt{2}} \right). 
-```
-
-### Using Taylor Series 
-
-One common method of evaluating non-elementary functions such as $\Phi$ is to use a Taylor series expansion. 
-We have two ways to go about this: 
-1. Take the Taylor series of $\Phi$ directly. 
-2. Take the Taylor series of some part of $\Phi$ and use it to simplify. 
-
-Doing 1. is interesting; it gives rise to a recursive pattern in the derivatives (that I may write another post about). 
-But computationally, it is not as useful. 
-
-<figure align="center">
-    <img src="./results/cpp_plot.svg" alt="Results of Taylor Series implementation" width="75%"/>
-    <!-- <img src="./results/cpp_plot.png" alt="Results of Taylor Series implementation" width="75%"/> -->
-    <!-- <img src="https://raw.githubusercontent.com/akenny430/blog/posts/0001-ComputingNormalCDF/results/cpp_plot.svg" alt="Results of Taylor Series implementation" width="75%"/> -->
-    <!-- <figcaption> 
-        Box plots of the results from each of the three tests. 
-    </figcaption> -->
-</figure>
+``` -->
