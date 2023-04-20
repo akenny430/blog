@@ -1,6 +1,7 @@
 #include <array> 
 #include <cmath> 
 #include <cstddef>
+#include <fstream>
 #include <iostream>
 #include <random> 
 #include <vector>
@@ -55,17 +56,36 @@ auto normalCDF_v2(normal_t x, std::size_t N = 5) -> normal_t
 
 auto test_cdf() -> void
 {
-    std::vector<normal_t> x_vals = get_vals(); 
-    for (const auto& x : x_vals)
+    for (const normal_t& x : get_vals())
     {
-        // std::cout << x << ": " << std::normal_distribution
         std::cout << x << ": " << normalCDF_v1(x) << ", " << normalCDF_v2(x, 15) << '\n'; 
     }
-    return; 
+}
+
+auto write_results() -> void 
+{
+    std::ofstream res_file; 
+
+    res_file.open("../results/cpp_results.csv");
+    res_file << "x,Erfc,TS05,TS10,TS15,TS20,TS30\n"; 
+    for (const normal_t& x : get_vals() )
+    {
+        res_file 
+        << x << ',' 
+        << normalCDF_v1(x) << ','  
+        << normalCDF_v2(x, 5) << ','  
+        << normalCDF_v2(x, 10) << ','  
+        << normalCDF_v2(x, 15) << ','  
+        << normalCDF_v2(x, 20) << ','  
+        << normalCDF_v2(x, 30) << ','  
+        << '\n'; 
+    } 
+    res_file.close(); 
 }
 
 auto main() -> int 
 {
-    test_cdf(); 
+    // test_cdf(); 
+    write_results(); 
     return 0; 
 }
