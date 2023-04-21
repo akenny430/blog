@@ -21,6 +21,7 @@ plot_results: pn.ggplot = (
     )
     + pn.geom_line(color="blue") 
     + pn.facet_wrap(facets="Implementation")
+    + pn.scale_y_continuous(limits=(0.0, 1.0))
     + pn.theme_bw() 
 )
 plot_results.save(filename="./cpp_plot.svg", verbose=False) 

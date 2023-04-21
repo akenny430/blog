@@ -8,11 +8,11 @@
 
 using normal_t = double; 
 
-auto get_vals(double min = -3.0, double max = 3.0, double delta = 0.01) -> std::vector<normal_t>
+auto get_vals(double min = -4.0, double max = 4.0, double delta = 0.01) -> std::vector<normal_t>
 {
     std::size_t _N_OBS = static_cast<std::size_t>((max - min) / delta) + 1;
     std::vector<normal_t> x_vals(_N_OBS); 
-    normal_t _temp = -3.0; 
+    normal_t _temp = min; 
     normal_t _delta = static_cast<normal_t>(delta); 
     for(std::size_t index = 0; index < _N_OBS; ++index)
     {
