@@ -60,11 +60,12 @@ auto n_fitted(normal_t x) -> std::size_t
     normal_t z = std::abs(x); 
     normal_t quadratic = 0.68936564 + z * ( 2.50832137 + z * 0.93954765 ); 
     return static_cast<std::size_t>(quadratic); 
-    // return static_cast<std::size_t>( std::ceil(quadratic) ); 
 }
 
 auto phi_DTS(normal_t x) -> normal_t
 {
+    if (x >= 4.0) {return 1.0;}
+    if (x <= -4.0) {return 0.0;}
     std::size_t N = n_fitted(x); 
     return phi_TS(x, N); 
 }

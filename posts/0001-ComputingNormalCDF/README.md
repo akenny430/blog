@@ -256,6 +256,24 @@ than $N_{\mathrm{L}}(x)$, this may be fine.
     <img src="./results/acceptable_n_comp.svg" alt="Results of Taylor Series implementation" width="75%", class="center"/>
 </h1>
 
+This is also easy to implement: 
+```C++
+auto n_fitted(normal_t x) -> std::size_t
+{
+    normal_t z = std::abs(x); 
+    normal_t quadratic = 0.68936564 + z * ( 2.50832137 + z * 0.93954765 ); 
+    return static_cast<std::size_t>(quadratic); 
+}
+
+auto phi_DTS(normal_t x) -> normal_t
+{
+    if (x >= 4.0) {return 1.0;}
+    if (x <= -4.0) {return 0.0;}
+    std::size_t N = n_fitted(x); 
+    return phi_TS(x, N); 
+}
+```
+
 <!-- ## Appendix 
 
 So, to use this to compute $\Phi(x)$, we can use a change in variable ($u \coloneqq t / \sqrt{2}$) and some more algebra: 
