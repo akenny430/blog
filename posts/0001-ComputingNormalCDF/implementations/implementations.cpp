@@ -75,9 +75,34 @@ auto write1_TaylorSeries() -> void
     res_file.close(); 
 }
 
+auto write2_DynamicTS() -> void
+{
+    std::ofstream res_file; 
+    res_file.open("../results/taylor_series_dynamic.csv");
+
+    // columns 
+    res_file << "x" << ','; 
+    for (int N = 0; N <= 30; ++N)
+    { res_file << 'N' << N << ','; }
+    res_file << '\n'; 
+
+    // data 
+    for (const normal_t& x : get_vals(-4.0, 4.0, 0.001) )
+    {
+        res_file << x << ','; 
+        for (int N = 0; N <= 30; ++N)
+        { res_file << phi_TS(x, N) << ','; }
+        res_file << '\n'; 
+    }
+
+    res_file.close(); 
+
+}
+
 auto main() -> int 
 {
-    write1_TaylorSeries(); 
+    // write1_TaylorSeries(); 
+    write2_DynamicTS(); 
 
     return 0; 
 }

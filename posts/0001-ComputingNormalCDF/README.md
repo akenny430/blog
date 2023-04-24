@@ -163,15 +163,16 @@ If we let $a_k(x)$ represent the $k^{\mathrm{th}}$ term in the series, we have
 a_k(x) = 
 \begin{cases}
 x & k = 0 \\
--\frac{(2k - 1) x^2}{2k(2k + 1)} \cdot a_{k - 1}(x) & k > 0
-\end{cases}.
+-\frac{(2k - 1) x^2}{2k(2k + 1)} \cdot a_{k - 1}(x) & k > 0. 
+\end{cases} 
 ```
 
 One thing to note about Taylor series is that we need to specify some limit to how many terms we can have. 
 Even though theoretically the infinite series is identical to the function, we will only be able to approximate with $N$ terms, i.e. 
 ```math
-\Phi(x) 
-\approx \frac{1}{2} + \frac{1}{\sqrt{2\pi}} \sum_{k=0}^{N} \frac{(-1)^k x^{2k + 1}}{2^k k! (2k + 1)}.
+\mathrm{TS}(x; N)
+\coloneqq \frac{1}{2} + \frac{1}{\sqrt{2\pi}} \sum_{k=0}^{N} \frac{(-1)^k x^{2k + 1}}{2^k k! (2k + 1)} 
+\approx \Phi(x).  
 ```
 As we increase $N$ the accuracy will improve, but it will take longer to compute. 
 A balance of both is necessary. 
@@ -193,13 +194,45 @@ auto phi_TS(normal_t x, std::size_t N = 5) -> normal_t
 }
 ```
 
-If we want to test the accuracy of using Taylor series for $\Phi$, we can plot the values for different values of $N$ 
-and compare that to $\mathrm{Erfc}$. I tested the values $N = 5, 10, 15, 20, 30$ over a grid of inputs in the interval $[-4, 4]$: 
+I tested the $\mathrm{Erfc}$ and Taylor series implementations (with the values $N = 5, 10, 15, 20, 30$) 
+over a grid of inputs in the interval $[-4, 4]$. 
+In the image below: the orange line represents the value of the implementation, 
+and the black dashed line represents the true value. 
 <h1 align="center">
     <img src="./results/taylor_series.svg" alt="Results of Taylor Series implementation" width="75%", class="center"/>
 </h1>
 
-By using up to 30 terms, the basis between the Taylor series and $\mathrm{Erfc}$ is extremely small.  
+As expected, the $\mathrm{Erfc}$ implementation is accurate. 
+The Taylor series implementation is also accurate when using $30$ terms. 
+
+### Dynamic Taylor Series 
+
+From the plots above, it is clear that we will not always need to go up to $30$ terms. 
+E.g. if we were trying to compute $\Phi(0.5)$, having only $N = 5$ terms should suffice. 
+More generally, we can think of having some kind of *dynamic* number of terms to use, 
+where $N(x)$ will now depend on the input: 
+
+```math
+\mathrm{DTS}(x)
+\coloneqq \mathrm{TS}\big(x; N(x)\big) 
+\approx \frac{1}{2} + \frac{1}{\sqrt{2\pi}} \sum_{k=0}^{N(x)} \frac{(-1)^k x^{2k + 1}}{2^k k! (2k + 1)}.
+```
+
+The goal now is to find an approproate counting function $N(x)$. 
+As a start, we can compute $\mathrm{TS}(x; N)$ 
+over a grid of $x$ values from $[-4, 4]$, with $N$ varying from $0$ to $30$. 
+For each $x$ value, we take the smallest $N$ such that $|\Phi(x) - \mathrm{TS}(x; N)| < \epsilon$, 
+where $\epsilon$ is some small number. 
+That is, 
+```math
+N(x; \epsilon) 
+= \min \{ N : |\Phi(x) - \mathrm{TS}(x; N)| < \epsilon \}. 
+```
+
+Below is a plot of what $N(x)$ would look like when $\epsilon = 0.00001$: 
+<h1 align="center">
+    <img src="./results/acceptable_n.svg" alt="Results of Taylor Series implementation" width="75%", class="center"/>
+</h1>
 
 
 <!-- ## Appendix 
