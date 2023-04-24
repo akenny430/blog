@@ -52,6 +52,23 @@ auto phi_TS(normal_t x, std::size_t N = 5) -> normal_t
     return 0.5 + (ONE_DIV_SQRT_TWO_PI * total); 
 }
 
+/**
+ * Normal CDF using *dynamic* Taylor series about 0 
+*/
+auto n_fitted(normal_t x) -> std::size_t
+{
+    normal_t z = std::abs(x); 
+    normal_t quadratic = 0.68936564 + z * ( 2.50832137 + z * 0.93954765 ); 
+    return static_cast<std::size_t>(quadratic); 
+    // return static_cast<std::size_t>( std::ceil(quadratic) ); 
+}
+
+auto phi_DTS(normal_t x) -> normal_t
+{
+    std::size_t N = n_fitted(x); 
+    return phi_TS(x, N); 
+}
+
 
 
 auto write1_TaylorSeries() -> void 
