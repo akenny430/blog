@@ -234,6 +234,27 @@ Below is a plot of what $N(x)$ would look like when $\epsilon = 0.00001$:
     <img src="./results/acceptable_n.svg" alt="Results of Taylor Series implementation" width="75%", class="center"/>
 </h1>
 
+We now have to implement this function, for which there are several methods: 
+1. A lookup table. 
+2. Fit a smooth function through the data; in this case, a quadratic function. 
+
+The lookup table has the benefit of being very accurate, whereas the smooth function is faster. 
+The resulting smooth function is given by 
+$$
+N_{\mathrm{F}}(x) 
+= \big\lceil 0.93954765 \cdot |x|^2 + 2.50832137 \cdot |x| + 0.68936564 \big\rceil;
+$$
+the derivation of $N_{\mathrm{F}}(x)$ can be found in the Appendix. 
+When comparing $N_{\mathrm{F}}(x)$ to $N_{\mathrm{L}}(x)$, 
+we see that $N_{\mathrm{F}}(x) \ge N_{\mathrm{L}}(x)$. 
+Using the fitted function means we will sometimes use more terms than necessary, 
+so it will be (needlessly) more accurate. 
+However, this means it will never be less accurate, and assuming it is faster to compute $N_{\mathrm{F}}(x)$
+than $N_{\mathrm{L}}(x)$, this may be fine. 
+
+<h1 align="center">
+    <img src="./results/acceptable_n_comp.svg" alt="Results of Taylor Series implementation" width="75%", class="center"/>
+</h1>
 
 <!-- ## Appendix 
 
