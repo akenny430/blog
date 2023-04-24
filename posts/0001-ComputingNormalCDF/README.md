@@ -240,10 +240,10 @@ We now have to implement this function, for which there are several methods:
 
 The lookup table has the benefit of being very accurate, whereas the smooth function is faster. 
 The resulting smooth function is given by 
-$$
+```math
 N_{\mathrm{F}}(x) 
 = \big\lceil 0.93954765 \cdot |x|^2 + 2.50832137 \cdot |x| + 0.68936564 \big\rceil;
-$$
+```
 the derivation of $N_{\mathrm{F}}(x)$ can be found in the Appendix. 
 When comparing $N_{\mathrm{F}}(x)$ to $N_{\mathrm{L}}(x)$, 
 we see that $N_{\mathrm{F}}(x) \ge N_{\mathrm{L}}(x)$. 
