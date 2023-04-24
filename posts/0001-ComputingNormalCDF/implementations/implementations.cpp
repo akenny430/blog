@@ -113,13 +113,32 @@ auto write2_DynamicTS() -> void
     }
 
     res_file.close(); 
-
 }
+
+auto write3_FinalComp() -> void
+{
+    std::ofstream res_file; 
+    res_file.open("../results/taylor_series_final.csv");
+    res_file << "x,Erfc,TS30,DTS (Fitted)\n"; 
+    for (const normal_t& x : get_vals() )
+    {
+        res_file 
+        << x << ',' 
+        << phi_ERFC(x) << ','  
+        << phi_TS(x, 30) << ','  
+        << phi_DTS(x) << ','  
+        << '\n'; 
+    } 
+    res_file.close(); 
+}
+
+
 
 auto main() -> int 
 {
     // write1_TaylorSeries(); 
-    write2_DynamicTS(); 
+    // write2_DynamicTS(); 
+    write3_FinalComp(); 
 
     return 0; 
 }
