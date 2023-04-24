@@ -7,12 +7,12 @@ norm: NormalDist = NormalDist(0.0, 1.0)
 _COOL_PHI: str = "$\Phi(x)$"
 
 # _MAIN_COLOR: str = "blue" # blue 
-# _MAIN_COLOR: str = "#BADA55" # light green 
+# _MAIN_COLOR: str = "#BADA55" # light green, also badass lol 
 _MAIN_COLOR: str = "#FFA500" # orange
 
 cpp_df: pl.DataFrame = (
     pl
-    .scan_csv(source="./cpp_results.csv")
+    .scan_csv(source="./taylor_series.csv")
     .melt(
         id_vars="x", 
         variable_name="Implementation", 
@@ -46,4 +46,4 @@ plot_results: pn.ggplot = (
     + pn.guides(color=None, linetype=None, alpha=None)
     + pn.theme_bw()  
 )
-plot_results.save(filename="./cpp_plot.svg", verbose=False) 
+plot_results.save(filename="./taylor_series.svg", verbose=False) 

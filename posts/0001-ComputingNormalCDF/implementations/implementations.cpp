@@ -24,12 +24,11 @@ auto get_vals(double min = -4.0, double max = 4.0, double delta = 0.01) -> std::
 
 
 
-// constexpr double SQRT_HALF = std::sqrt(0.5); 
-constexpr normal_t SQRT_HALF = 0.70710678118; 
 /**
  * Normal CDF using Erfc function 
 */
-auto normalCDF_v1(normal_t x) -> normal_t
+constexpr normal_t SQRT_HALF = 0.70710678118; 
+auto phi_ERFC(normal_t x) -> normal_t
 {
     return 0.5 * std::erfc(- SQRT_HALF * x); 
 }
@@ -38,9 +37,8 @@ auto normalCDF_v1(normal_t x) -> normal_t
  * Normal CDF using Taylor Series about 0
  * 
 */
-// constexpr normal_t ONE_DIV_SQRT_TWO_PI = 1.0 / std::sqrt(2.0 * std::pi)
 constexpr normal_t ONE_DIV_SQRT_TWO_PI = 0.39894228; 
-auto normalCDF_v2(normal_t x, std::size_t N = 5) -> normal_t
+auto phi_TS(normal_t x, std::size_t N = 5) -> normal_t
 {
     // if N < 0 we have error 
     if(N == 0){return 0.5 + (ONE_DIV_SQRT_TWO_PI * x);} 
@@ -54,30 +52,24 @@ auto normalCDF_v2(normal_t x, std::size_t N = 5) -> normal_t
     return 0.5 + (ONE_DIV_SQRT_TWO_PI * total); 
 }
 
-auto test_cdf() -> void
-{
-    for (const normal_t& x : get_vals())
-    {
-        std::cout << x << ": " << normalCDF_v1(x) << ", " << normalCDF_v2(x, 15) << '\n'; 
-    }
-}
 
-auto write_results() -> void 
+
+auto write1_TaylorSeries() -> void 
 {
     std::ofstream res_file; 
 
-    res_file.open("../results/cpp_results.csv");
+    res_file.open("../results/taylor_series.csv");
     res_file << "x,Erfc,TS05,TS10,TS15,TS20,TS30\n"; 
     for (const normal_t& x : get_vals() )
     {
         res_file 
         << x << ',' 
-        << normalCDF_v1(x) << ','  
-        << normalCDF_v2(x, 5) << ','  
-        << normalCDF_v2(x, 10) << ','  
-        << normalCDF_v2(x, 15) << ','  
-        << normalCDF_v2(x, 20) << ','  
-        << normalCDF_v2(x, 30) << ','  
+        << phi_ERFC(x) << ','  
+        << phi_TS(x, 5) << ','  
+        << phi_TS(x, 10) << ','  
+        << phi_TS(x, 15) << ','  
+        << phi_TS(x, 20) << ','  
+        << phi_TS(x, 30) << ','  
         << '\n'; 
     } 
     res_file.close(); 
@@ -85,7 +77,7 @@ auto write_results() -> void
 
 auto main() -> int 
 {
-    // test_cdf(); 
-    write_results(); 
+    write1_TaylorSeries(); 
+
     return 0; 
 }

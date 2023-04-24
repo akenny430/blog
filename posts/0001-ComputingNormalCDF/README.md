@@ -123,7 +123,7 @@ This is very easy to implement:
 using normal_t = double;
 
 constexpr normal_t SQRT_HALF = 0.70710678118; 
-auto normalCDF_v1(normal_t x) -> normal_t
+auto phi_ERFC(normal_t x) -> normal_t
 {
     return 0.5 * std::erfc(- SQRT_HALF * x); 
 }
@@ -131,7 +131,7 @@ auto normalCDF_v1(normal_t x) -> normal_t
 Because anything that's in the standard library will have been tested, we can be assured that these values are correct. 
 Going forward, we will use this implementation as the "ground truth" to which compare any other implementation. 
 
-### Using Taylor Series 
+### Taylor Series 
 
 One common method of evaluating non-elementary functions such as $\Phi$ is to use a Taylor series expansion. 
 We have two ways to go about this: 
@@ -169,17 +169,17 @@ x & k = 0 \\
 
 One thing to note about Taylor series is that we need to specify some limit to how many terms we can have. 
 Even though theoretically the infinite series is identical to the function, we will only be able to approximate with $N$ terms, i.e. 
-$$
+```math
 \Phi(x) 
 \approx \frac{1}{2} + \frac{1}{\sqrt{2\pi}} \sum_{k=0}^{N} \frac{(-1)^k x^{2k + 1}}{2^k k! (2k + 1)}.
-$$
+```
 As we increase $N$ the accuracy will improve, but it will take longer to compute. 
 A balance of both is necessary. 
 
 Here is an implementation: 
 ```C++
 constexpr normal_t ONE_DIV_SQRT_TWO_PI = 0.39894228; 
-auto normalCDF_v2(normal_t x, std::size_t N = 5) -> normal_t
+auto phi_TS(normal_t x, std::size_t N = 5) -> normal_t
 {
     if(N == 0){ return 0.5 + (ONE_DIV_SQRT_TWO_PI * x); } 
     normal_t term = x; 
@@ -196,7 +196,7 @@ auto normalCDF_v2(normal_t x, std::size_t N = 5) -> normal_t
 If we want to test the accuracy of using Taylor series for $\Phi$, we can plot the values for different values of $N$ 
 and compare that to $\mathrm{Erfc}$. I tested the values $N = 5, 10, 15, 20, 30$ over a grid of inputs in the interval $[-4, 4]$: 
 <h1 align="center">
-    <img src="./results/cpp_plot.svg" alt="Results of Taylor Series implementation" width="75%", class="center"/>
+    <img src="./results/taylor_series.svg" alt="Results of Taylor Series implementation" width="75%", class="center"/>
 </h1>
 
 By using up to 30 terms, the basis between the Taylor series and $\mathrm{Erfc}$ is extremely small.  
