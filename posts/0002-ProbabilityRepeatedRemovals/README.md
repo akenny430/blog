@@ -218,6 +218,7 @@ which were created in the `make_plots.py` script:
 ![](_plots/049.svg)
 ![](_plots/099.svg)
 ![](_plots/199.svg)
+![](_plots/499.svg)
 
 We see that the simulated sample averages match closely
 to the theoretical expected values.
