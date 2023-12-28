@@ -164,6 +164,10 @@ It is somewhat surprising that every value of $K(n)$ has the same probability of
 
 ## Computing the expected value
 
+From this result, we can see that
+$K(n) \sim \mathrm{Uniform}(1, n)$.
+This is easy to verify.
+
 To first verify that this is a valid density function, we can check
 ```math
 \sum_{k = 1}^n \mathbb{P}[K(n) = k]
@@ -182,6 +186,14 @@ The expected value is then
 = \frac{1}{n} \cdot \frac{n(n + 1)}{2}
 = \frac{n + 1}{2}.
 ```
+
+Of course, these align with the more general results
+from a uniform random variable.
+
+Intuitively,
+this mean for a given value of $n$,
+we can expect to have (about) half
+that number of removals before removing $0$.
 
 
 
