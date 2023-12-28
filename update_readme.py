@@ -1,11 +1,10 @@
-import os 
-from pathlib import Path 
+import os
+from pathlib import Path
 
-_BLOG_PATH: Path = Path.cwd() 
-_POSTS_PATH: Path = _BLOG_PATH / "posts" 
+_BLOG_PATH: Path = Path.cwd()
+_POSTS_PATH: Path = _BLOG_PATH / "posts"
 
-_INTRO: str = (
-"""# Aiden's Blog 
+_INTRO: str = """# Aiden's Blog 
 
 I like to write about topics in mathematics, computer science, and quantitative finance. 
 
@@ -21,17 +20,17 @@ The types of posts one can expect are:
 ## List of posts 
 
 """
-)
 
 
-
-with open(file=_BLOG_PATH / "README.md", mode='w') as readme:
-    # print(type(readme)) # TextIOWrapper   
-    readme.write(_INTRO) 
-    for blog_post in os.listdir(_POSTS_PATH): 
-        print( str(_POSTS_PATH / blog_post / "README.md") )
-        with open(file=_POSTS_PATH / blog_post / "README.md", mode='r') as blog_md: 
-            blog_code, blog_title = blog_md.readline().split(':') 
-            blog_code = blog_code.replace("# ", '') 
-            blog_title = blog_title.replace('\n', '').strip()
-        readme.write(f"- [{blog_code}: {blog_title}](posts/{blog_post}/README.md) ") # TODO: not sure about Path concatonation
+with open(file=_BLOG_PATH / "README.md", mode="w") as readme:
+    # print(type(readme)) # TextIOWrapper
+    readme.write(_INTRO)
+    for blog_post in os.listdir(_POSTS_PATH):
+        print(str(_POSTS_PATH / blog_post / "README.md"))
+        with open(file=_POSTS_PATH / blog_post / "README.md", mode="r") as blog_md:
+            blog_code, blog_title = blog_md.readline().split(":")
+            blog_code = blog_code.replace("# ", "")
+            blog_title = blog_title.replace("\n", "").strip()
+        readme.write(
+            f"- [{blog_code}: {blog_title}](posts/{blog_post}/README.md) "
+        )  # TODO: not sure about Path concatonation
