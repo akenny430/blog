@@ -34,5 +34,5 @@ with open(file=_BLOG_PATH / "README.md", mode="w") as readme:
             blog_code = blog_code.replace("# ", "")
             blog_title = blog_title.replace("\n", "").strip()
         readme.write(
-            f"- [{blog_code}: {blog_title}](posts/{blog_post}/README.md) "
+            f"\n- [{blog_code}: {blog_title}](posts/{blog_post}/README.md) "
         )  # TODO: not sure about Path concatonation
