@@ -122,7 +122,7 @@ The same independence argument holds, so we would have
 We now want to determine $\mathbb{P}[K(n) = k]$
 for any value of $k$.
 We can figure the following:
-- The count of groups in the set of selections is $G(k; n) = {}_{n-1}\mathrm{P}_k = (n - 1)! / k!$.
+- The count of groups in the set of selections is $G(k; n) = {}_{n-1}\mathrm{P}_{k-1} = (n - 1)! / (k - 1)!$.
 - Each group will have $n - k + 1$ elements.
 - The probability of the $k\!$ th selection containing a $0$ is then just $1 / (n - k + 1)$.
 - The probability that the $k\!$ th selection does not contain a $0$ is $1 - 1 / (n - k + 1)$.
