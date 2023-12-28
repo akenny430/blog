@@ -1,4 +1,4 @@
-# 0002: Probability question: computing the expected number of removals.
+# 0002: Computing the expected number of removals
 
 
 
