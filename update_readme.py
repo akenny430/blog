@@ -26,6 +26,8 @@ with open(file=_BLOG_PATH / "README.md", mode="w") as readme:
     # print(type(readme)) # TextIOWrapper
     readme.write(_INTRO)
     for blog_post in os.listdir(_POSTS_PATH):
+        if blog_post.startswith("."):
+            continue
         print(str(_POSTS_PATH / blog_post / "README.md"))
         with open(file=_POSTS_PATH / blog_post / "README.md", mode="r") as blog_md:
             blog_code, blog_title = blog_md.readline().split(":")
