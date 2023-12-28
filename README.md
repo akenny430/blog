@@ -13,4 +13,4 @@ The types of posts one can expect are:
 
 ## List of posts 
 
-- [0001: Fast and correct computation of the standard normal CDF](posts/0001-ComputingNormalCDF/README.md)
+- [0001: Fast and correct computation of the standard normal CDF](posts/0001-ComputingNormalCDF/README.md) - [0002: Computing the expected number of removals](posts/0002-ProbabilityRepeatedRemovals/README.md) 
