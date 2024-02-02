@@ -72,3 +72,56 @@ When generating probabilities using $G_X$, we took repeated derivatives,
 and this was okay because the domain is discrete.
 To do the same thing with a continuous distribution,
 we will need some kind of "continuous" derivative as well.
+
+## Fractional derivatives
+
+For some function $f(s)$, we want to generalize the $k$th derivative
+$\mathrm{d}^kf / \mathrm{d}s^k$ from $k \in \mathbb{N}$
+to $k \in \mathbb{R}_+$.
+Let's consider the function $f(s) = s^x$;
+differentiating $k$ times gives us
+$$
+\frac{\mathrm{d}^k}{\mathrm{d}s^k} s^x
+= \frac{x!}{(x - k)!} s^{x - k}.
+$$
+A natural extension is to replace the factorial with the Gamma function:
+$$
+% \frac{\mathrm{d}^k}{\mathrm{d}s^k} s^x
+\mathrm{D}^k s^x
+= \frac{\Gamma(x + 1)}{\Gamma(x + 1 - k)} s^{x - k},
+$$
+where $\mathrm{D}^k$ is the *continuous differential operator*.
+With more rigorous treatment, one can show this is indeed a valid generalization.
+For any function $f(s)$, we can construct
+$$
+\mathrm{D}^k
+= \frac{1}{\Gamma(\lceil k \rceil - k)}
+\cdot \frac{\mathrm{d}^{\lceil k \rceil}}{\mathrm{d}s^{\lceil k \rceil}}
+\int_{\alpha}^s (s - t)^{\lceil k \rceil - k - 1} f(t) \,\mathrm{d}t,
+$$
+although for the DGF we only need to differentiate $f(s) = s^x$.
+
+## Back to generating densities
+
+Applying $\mathrm{D}^k$ to the DGF gives
+$$
+\mathrm{D}^k \, G_X(s)
+= \mathrm{D}^k \int_{x \in \mathcal{D}_X} s^x f_X(x) \,\mathrm{d}x
+= \int_{x \in \mathcal{D}_X} \mathrm{D}^k \, s^x \cdot f_X(x) \,\mathrm{d}x
+= \int_{x \in \mathcal{D}_X} \frac{\Gamma(x + 1)}{\Gamma(x + 1 - k)} s^{x - k} \cdot f_X(x) \,\mathrm{d}x.
+$$
+Just as with the PGF, plugging in $s=0$ gives
+$$
+\mathrm{D}^k \, G_X(0)
+= \int_{x \in \mathcal{D}_X} \frac{\Gamma(x + 1)}{\Gamma(x + 1 - k)} \cdot 0^{x - k} \cdot f_X(x) \,\mathrm{d}x
+= \frac{\Gamma(k + 1)}{\Gamma(k + 1 - k)} f_X(k)
+= \Gamma(k + 1) \cdot f_X(k),
+$$
+from which we get
+$$
+f_X(k)
+% = \frac{\mathrm{D}^k \, G_X(0)}{\Gamma(k + 1)}
+= \frac{1}{\Gamma(k + 1)} \cdot \mathrm{D}^k \, G_X(0).
+$$
+This is indeed a generalization from the PGF;
+if $k \in \mathbb{N}$, then $\Gamma(k + 1) = k!$.
