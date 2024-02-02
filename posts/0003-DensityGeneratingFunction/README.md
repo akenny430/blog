@@ -1,7 +1,3 @@
----
-math: mathjax
----
-
 # 0003: Attempts at making a density generating function
 
 ## Introduction
@@ -15,21 +11,21 @@ Another kind of generating function is a
 For a discrete random variable $X$
 with non-negative support $\mathcal{D}_X \subseteq \mathbb{Z}_+$,
 its PGF is given by
-$$
+```math
 G_X(s)
 \coloneqq
 \mathbb{E} \big[ s^{X} \big]
 = \sum_{x \in \mathcal{D}_X} s^x f_X(x),
-$$
+```
 where $f_X(x)$ is the probability mass function of $X$.
 One key property (and hence the name)
 is that you can generate probabilities
 by taking successive derivatives:
-$$
+```math
 f_X(k)
 = \frac{1}{k!} \frac{\mathrm{d}^k G_X}{\mathrm{d}s^k}(0).
 % = \frac{1}{k!} G_X^{(k)}(0)
-$$
+```
 That is, to find the probability that $X$ is equal to some $k \in \mathcal{D}_X$,
 you differentiate the generating function $k$ times, evaluate it at $s = 0$,
 and then divide by $k!$.
@@ -57,12 +53,12 @@ but probability *densities*;
 It makes sense to then call this a *density generating function (DGF)*.
 If $X$ is a continuous random variable with support $\mathcal{D}_X \subseteq \mathbb{R}_+$,
 then its DGF is given by
-$$
+```math
 G_X(s)
 \coloneqq
 \mathbb{E} \big[ s^{X} \big]
 = \int_{x \in \mathcal{D}_X} s^x f_X(x) \,\mathrm{d}x,
-$$
+```
 where $f_X(x)$ is the probability density function of $X$.
 
 <!-- We could generate densities by taking derivatives,
@@ -80,48 +76,48 @@ $\mathrm{d}^kf / \mathrm{d}s^k$ from $k \in \mathbb{N}$
 to $k \in \mathbb{R}_+$.
 Let's consider the function $f(s) = s^x$;
 differentiating $k$ times gives us
-$$
+```math
 \frac{\mathrm{d}^k}{\mathrm{d}s^k} s^x
 = \frac{x!}{(x - k)!} s^{x - k}.
-$$
+```
 A natural extension is to replace the factorial with the Gamma function:
-$$
+```math
 % \frac{\mathrm{d}^k}{\mathrm{d}s^k} s^x
 \mathrm{D}^k s^x
 = \frac{\Gamma(x + 1)}{\Gamma(x + 1 - k)} s^{x - k},
-$$
+```
 where $\mathrm{D}^k$ is the *continuous differential operator*.
 With more rigorous treatment, one can show this is indeed a valid generalization.
 For any function $f(s)$, we can construct
-$$
+```math
 \mathrm{D}^k
 = \frac{1}{\Gamma(\lceil k \rceil - k)}
 \cdot \frac{\mathrm{d}^{\lceil k \rceil}}{\mathrm{d}s^{\lceil k \rceil}}
 \int_{\alpha}^s (s - t)^{\lceil k \rceil - k - 1} f(t) \,\mathrm{d}t,
-$$
+```
 although for the DGF we only need to differentiate $f(s) = s^x$.
 
 ## Back to generating densities
 
 Applying $\mathrm{D}^k$ to the DGF gives
-$$
+```math
 \mathrm{D}^k \, G_X(s)
 = \mathrm{D}^k \int_{x \in \mathcal{D}_X} s^x f_X(x) \,\mathrm{d}x
 = \int_{x \in \mathcal{D}_X} \mathrm{D}^k \, s^x \cdot f_X(x) \,\mathrm{d}x
 = \int_{x \in \mathcal{D}_X} \frac{\Gamma(x + 1)}{\Gamma(x + 1 - k)} s^{x - k} \cdot f_X(x) \,\mathrm{d}x.
-$$
+```
 Just as with the PGF, plugging in $s=0$ gives
-$$
+```math
 \mathrm{D}^k \, G_X(0)
 = \int_{x \in \mathcal{D}_X} \frac{\Gamma(x + 1)}{\Gamma(x + 1 - k)} \cdot 0^{x - k} \cdot f_X(x) \,\mathrm{d}x
 = \frac{\Gamma(k + 1)}{\Gamma(k + 1 - k)} f_X(k)
 = \Gamma(k + 1) \cdot f_X(k),
-$$
+```
 from which we get
-$$
+```math
 f_X(k)
 % = \frac{\mathrm{D}^k \, G_X(0)}{\Gamma(k + 1)}
 = \frac{1}{\Gamma(k + 1)} \cdot \mathrm{D}^k \, G_X(0).
-$$
+```
 This is indeed a generalization from the PGF;
 if $k \in \mathbb{N}$, then $\Gamma(k + 1) = k!$.
