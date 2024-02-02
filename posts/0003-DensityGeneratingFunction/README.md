@@ -57,7 +57,7 @@ then its DGF is given by
 G_X(s)
 \coloneqq
 \mathbb{E} \big[ s^{X} \big]
-= \int_{x \in \mathcal{D}_X} s^x f_X(x) \,\mathrm{d}x,
+= \int_{\mathcal{D}_X} s^x f_X(x) \,\mathrm{d}x,
 ```
 where $f_X(x)$ is the probability density function of $X$.
 
@@ -102,14 +102,14 @@ although for the DGF we only need to differentiate $f(s) = s^x$.
 Applying $\mathrm{D}^k$ to the DGF gives
 ```math
 \mathrm{D}^k \, G_X(s)
-= \mathrm{D}^k \int_{x \in \mathcal{D}_X} s^x f_X(x) \,\mathrm{d}x
-= \int_{x \in \mathcal{D}_X} \mathrm{D}^k \, s^x \cdot f_X(x) \,\mathrm{d}x
-= \int_{x \in \mathcal{D}_X} \frac{\Gamma(x + 1)}{\Gamma(x + 1 - k)} s^{x - k} \cdot f_X(x) \,\mathrm{d}x.
+= \mathrm{D}^k \int_{\mathcal{D}_X} s^x f_X(x) \,\mathrm{d}x
+= \int_{\mathcal{D}_X} \mathrm{D}^k \, s^x \cdot f_X(x) \,\mathrm{d}x
+= \int_{\mathcal{D}_X} \frac{\Gamma(x + 1)}{\Gamma(x + 1 - k)} s^{x - k} \cdot f_X(x) \,\mathrm{d}x.
 ```
 Just as with the PGF, plugging in $s=0$ gives
 ```math
 \mathrm{D}^k \, G_X(0)
-= \int_{x \in \mathcal{D}_X} \frac{\Gamma(x + 1)}{\Gamma(x + 1 - k)} \cdot 0^{x - k} \cdot f_X(x) \,\mathrm{d}x
+= \int_{\mathcal{D}_X} \frac{\Gamma(x + 1)}{\Gamma(x + 1 - k)} \cdot 0^{x - k} \cdot f_X(x) \,\mathrm{d}x
 = \frac{\Gamma(k + 1)}{\Gamma(k + 1 - k)} f_X(k)
 = \Gamma(k + 1) \cdot f_X(k),
 ```
