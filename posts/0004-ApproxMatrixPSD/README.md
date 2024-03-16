@@ -64,9 +64,6 @@ Our quadratic form can then be written as
 
 Given that $\mathbf{C}$ is PSD,
 it follows that $\mathbf{R}$ is PSD as well.
-<!--
-TODO: add proof of this
--->
 
 However, suppose for whatever reason,
 you are not able to empirically determine the covariance/correlation
@@ -105,7 +102,7 @@ TODO: figure out how to put i \neq j in subscript
 While the full correlation matrix $\mathbf{R}$ is PSD,
 it may not be true that the approximate matrix $\mathbf{Q}$ is.
 That brings us to the purpose of this post:
-*when is the matrix $\mathbf{Q}$ PSD?*
+*when is the matrix* $\mathbf{Q}$ *PSD?*
 
 ## Looking at eigenvalues
 
@@ -415,7 +412,7 @@ We generally see that
 \mathrm{det}(\mathbf{H}_n)
 = (\gamma - \rho) \,\mathrm{det}(\mathbf{H}_{n - 1}).
 ```
-And since $\mathrm{det}(\mathbf{H}_n) = \rho$, we have
+And since $\mathrm{det}(\mathbf{H}_1) = \rho$, we have
 ```math
 \mathrm{det}(\mathbf{H}_n)
 = \rho (\gamma - \rho)^{n - 1}.
