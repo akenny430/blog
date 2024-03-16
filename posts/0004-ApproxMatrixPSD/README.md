@@ -106,15 +106,244 @@ While the full correlation matrix $\mathbf{R}$ is PSD,
 it may not be true that the approximate matrix $\mathbf{Q}$ is.
 That brings us to the purpose of this post:
 *when is the matrix $\mathbf{Q}$ PSD?*
-<!-- we have its correlation *correlation* matrix $\mathbf{R}$
-(not a covariance matrix);
-element $(i, j)$, $\rho_{i, j}$,
-is the correlation between $X_i$ and $X_j$. -->
-<!-- $$
-\rho_{i,j}
-=
-\begin{cases}
-    1& i = j \\
 
-\end{cases}
-$$ -->
+## Proving PSD
+
+One way to show a matrix is PSD is to look at its eigenvalues:
+*if all of the eigenvalues are non-negative,
+then the matrix is PSD*.
+We can find the eigenvalues by solving the polynomial equation
+$$
+P(\lambda)
+= \mathrm{det}(\mathbf{Q} - \lambda \mathbf{I})
+\overset{\text{set}}{=} 0.
+$$
+For some notation,
+let $\mathbf{Q}_n$ specify the dimensionality $n$
+<!-- and let $\mathbf{G}_n = \mathbf{Q}_n - \lambda \mathbf{I}_n$. -->
+and let
+$$
+\mathbf{G}_n
+= \mathbf{Q}_n - \lambda \mathbf{I}_n
+=
+\begin{bmatrix}
+    1 - \lambda & \rho & \cdots & \rho \\
+    \rho & 1 - \lambda & \cdots & \rho \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \rho & \rho & \cdots & 1 - \lambda
+\end{bmatrix}
+=
+\begin{bmatrix}
+    \gamma & \rho & \cdots & \rho \\
+    \rho & \gamma & \cdots & \rho \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \rho & \rho & \cdots & \gamma
+\end{bmatrix},
+$$
+where $\gamma = 1 - \lambda$.
+We are going to try and find a formula for
+$\det(\mathrm{G}_n)$ for any $n$.
+It's good to first example specific cases,
+and see if we can see an emerging pattern.
+
+### $n = 2$
+
+We have
+$$
+\mathrm{det}(\mathbf{G}_2)
+= \mathrm{det}
+\begin{bmatrix}
+    \gamma & \rho \\ \rho & \gamma
+\end{bmatrix}
+= \gamma^2 - \rho^2
+= (\gamma - \rho)(\gamma + \rho).
+$$
+
+### $n = 3$
+
+Using the Leibniz formula for computing determinants gives us
+$$
+\mathrm{det}(\mathbf{G}_3)
+= \mathrm{det}
+\begin{bmatrix}
+    \gamma & \rho & \rho \\
+    \rho & \gamma & \rho \\
+    \rho & \rho & \gamma
+\end{bmatrix}
+=
+\gamma
+\begin{bmatrix}
+    \gamma & \rho \\ \rho & \gamma
+\end{bmatrix}
+- \rho
+\begin{bmatrix}
+    \rho & \rho \\ \rho & \gamma
+\end{bmatrix}
++ \rho
+\begin{bmatrix}
+    \rho & \gamma \\ \rho & \rho
+\end{bmatrix}.
+$$
+From this sum, we see two "types" of terms:
+- A matrix with two $\gamma$ terms, being multiplied by $\gamma$.
+- A matrix with one $\gamma$ term, being multiplied by $\rho$.
+
+However, we can re-arrange the second type to
+move all the $\gamma$ term to the upper-left corner,
+giving us
+$$
+\begin{align*}
+\mathrm{det}(\mathbf{G}_3)
+&=
+\gamma
+\begin{bmatrix}
+    \gamma & \rho \\ \rho & \gamma
+\end{bmatrix}
+- \rho
+\begin{bmatrix}
+    \rho & \rho \\ \rho & \gamma
+\end{bmatrix}
++ \rho
+\begin{bmatrix}
+    \rho & \gamma \\ \rho & \rho
+\end{bmatrix} \\
+&=
+\gamma
+\begin{bmatrix}
+    \gamma & \rho \\ \rho & \gamma
+\end{bmatrix}
+- \rho
+\begin{bmatrix}
+    \gamma & \rho \\ \rho & \rho
+\end{bmatrix}
+- \rho
+\begin{bmatrix}
+    \gamma & \rho \\ \rho & \rho
+\end{bmatrix} \\
+&=
+\gamma
+\begin{bmatrix}
+    \gamma & \rho \\ \rho & \gamma
+\end{bmatrix}
+- 2 \rho
+\begin{bmatrix}
+    \gamma & \rho \\ \rho & \rho
+\end{bmatrix}.
+\end{align*}
+$$
+We could try to then reduce the $2 \times 2$ matrices here,
+but we already solved the first one in the previous iteration;
+that is just $\mathbf{G}_2$.
+Let's hold off for now
+and instead try to find a recursive pattern.
+
+### $n = 4$
+
+Using the same logic as before, we get
+$$
+\begin{align*}
+\mathrm{det}(\mathbf{G}_4)
+&= \mathrm{det}
+\begin{bmatrix}
+    \gamma & \rho & \rho & \rho \\
+    \rho & \gamma & \rho & \rho \\
+    \rho & \rho & \gamma & \rho \\
+    \rho & \rho & \rho & \gamma
+\end{bmatrix} \\
+&=
+\gamma
+\begin{vmatrix}
+    \gamma & \rho & \rho \\
+    \rho & \gamma & \rho \\
+    \rho & \rho & \gamma
+\end{vmatrix}
+- \rho
+\begin{vmatrix}
+    \rho & \rho & \rho \\
+    \rho & \gamma & \rho \\
+    \rho & \rho & \gamma
+\end{vmatrix}
++ \rho
+\begin{vmatrix}
+    \rho & \gamma & \rho \\
+    \rho & \rho & \rho \\
+    \rho & \rho & \gamma
+\end{vmatrix}
+- \rho
+\begin{vmatrix}
+    \rho & \gamma & \rho \\
+    \rho & \rho & \gamma \\
+    \rho & \rho & \rho
+\end{vmatrix} \\
+&=
+\gamma
+\begin{vmatrix}
+    \gamma & \rho & \rho \\
+    \rho & \gamma & \rho \\
+    \rho & \rho & \gamma
+\end{vmatrix}
+- \rho
+\begin{vmatrix}
+    \gamma & \rho & \rho \\
+    \rho & \gamma & \rho \\
+    \rho & \rho & \rho
+\end{vmatrix}
+- \rho
+\begin{vmatrix}
+    \gamma & \rho & \rho \\
+    \rho & \gamma & \rho \\
+    \rho & \rho & \rho
+\end{vmatrix}
+- \rho
+\begin{vmatrix}
+    \gamma & \rho & \rho \\
+    \rho & \gamma & \rho \\
+    \rho & \rho & \rho
+\end{vmatrix} \\
+&=
+\gamma
+\;\mathrm{det} 
+\begin{bmatrix}
+    \gamma & \rho & \rho \\
+    \rho & \gamma & \rho \\
+    \rho & \rho & \gamma
+\end{bmatrix}
+- 3 \rho
+\;\mathrm{det} 
+\begin{bmatrix}
+    \gamma & \rho & \rho \\
+    \rho & \gamma & \rho \\
+    \rho & \rho & \rho
+\end{bmatrix}.
+\end{align*}
+$$
+We have a similar pattern as before;
+we see $\mathrm{det}(\mathbf{G}_3)$ being multiplied by $\gamma$,
+and subtracting away the determinant of a matrix
+with all diagonal entries $\gamma$ except for the last entry,
+being multiplied by some multiple of $\rho$.
+Here $n = 4$; the two subsequent matrices are $3 \times 3$,
+and the $\rho$ is being multiplied by $3$, both one less than $4$.
+For a general $n$,
+this value would generalize to $n - 1$.
+
+### General $n$
+
+For the matrix of all $\gamma$ except for the last diagonal entry,
+let's call it
+$$
+\mathbf{H}_n
+=
+\begin{bmatrix}
+    \gamma & \rho & \cdots & \rho \\
+    \rho & \gamma & \cdots & \rho \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \rho & \rho & \cdots & \rho
+\end{bmatrix}.
+$$
+We can then write, for general $n$,
+$$
+\mathrm{det}(\mathbf{G}_n)
+= \gamma \,\mathrm{det}(\mathbf{G}_{n - 1})
+- (n - 1) \rho \,\mathrm{det} (\mathbf{H}_{n - 1}).
+$$
