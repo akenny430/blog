@@ -107,7 +107,7 @@ it may not be true that the approximate matrix $\mathbf{Q}$ is.
 That brings us to the purpose of this post:
 *when is the matrix $\mathbf{Q}$ PSD?*
 
-## Proving PSD
+## Looking at eigenvalues
 
 One way to show a matrix is PSD is to look at its eigenvalues:
 *if all of the eigenvalues are non-negative,
@@ -347,3 +347,183 @@ $$
 = \gamma \,\mathrm{det}(\mathbf{G}_{n - 1})
 - (n - 1) \rho \,\mathrm{det} (\mathbf{H}_{n - 1}).
 $$
+So, if we first are able to figure the value of $\mathrm{det}(\mathbf{H}_n)$,
+we can then determine $\mathrm{det}(\mathbf{G}_n)$.
+
+## Recursive formula for $\mathrm{det}(\mathbf{H}_n)$
+
+Similar to before, lets look at some examples.
+The base case, $n = 1$,
+has $\mathrm{det}(\mathbf{H}_1) = \rho$.
+
+### $n = 2$
+
+We have
+$$
+\mathrm{det}(\mathbf{H}_2)
+= \mathrm{det}
+\begin{bmatrix}
+\gamma & \rho \\ \rho & \rho
+\end{bmatrix}
+= \gamma \rho - \rho^2
+= (\gamma - \rho) \rho
+= (\gamma - \rho) \,\mathrm{det}(\mathbf{H}_1).
+$$
+
+### $n = 3$
+
+We have
+$$
+\begin{align*}
+\mathrm{det}(\mathbf{H}_3)
+&= \mathrm{det}
+\begin{bmatrix}
+\gamma & \rho & \rho \\
+\rho & \gamma & \rho \\
+\rho & \rho & \rho
+\end{bmatrix}
+=
+\gamma
+\begin{vmatrix}
+\gamma & \rho \\ \rho & \rho
+\end{vmatrix}
+- \rho
+\begin{vmatrix}
+\rho & \rho \\ \rho & \rho
+\end{vmatrix}
++ \rho
+\begin{vmatrix}
+\rho & \gamma \\ \rho & \rho
+\end{vmatrix} \\
+&=
+\gamma
+\begin{vmatrix}
+\gamma & \rho \\ \rho & \rho
+\end{vmatrix}
+- \rho
+\begin{vmatrix}
+\gamma & \rho \\ \rho & \rho
+\end{vmatrix}
+= (\gamma - \rho) \,\mathrm{det}(\mathbf{H}_2).
+\end{align*}
+$$
+
+### General $n$
+
+We generally see that
+$$
+\mathrm{det}(\mathbf{H}_n)
+= (\gamma - \rho) \,\mathrm{det}(\mathbf{H}_{n - 1}).
+$$
+And since $\mathrm{det}(\mathbf{H}_n) = \rho$, we have
+$$
+\mathrm{det}(\mathbf{H}_n)
+= \rho (\gamma - \rho)^{n - 1}.
+$$
+
+## Back to solving $\mathrm{det}(\mathbf{G}_n)$
+
+Using our new formula for $\mathrm{det}(\mathbf{H}_n)$,
+we can now write
+$$
+\mathrm{det}(\mathbf{G}_n)
+% = \gamma \,\mathrm{det}(\mathbf{G}_{n - 1})
+% - (n - 1) \rho \,\mathrm{det} (\mathbf{H}_{n - 1})
+= \gamma \,\mathrm{det}(\mathbf{G}_{n - 1})
+- (n - 1) \rho^2 (\gamma - \rho)^{n - 2}.
+$$
+This isn't super useful right now,
+but if we can make a guess as to the value for $\mathrm{det}(\mathbf{G}_n)$,
+we can then prove it using induction with this formula.
+To make that guess, let's go back to some of
+the specific values of $n$ we computed earlier.
+
+We know as a base case that $\mathrm{det}(\mathbf{G}_1) = \gamma$,
+and we saw before that
+$$
+\mathrm{det}(\mathbf{G}_2) = (\gamma - \rho)(\gamma + \rho).
+$$
+If we use this to evaulate $\mathrm{det}(\mathbf{G}_3)$, we have
+$$
+\begin{align*}
+\mathrm{det}(\mathbf{G}_3)
+&=
+\gamma
+\, \mathrm{det}(\mathbf{G}_2)
+- 2 \rho^2 (\gamma - \rho) \\
+&=
+\gamma
+(\gamma - \rho)(\gamma + \rho)
+- 2 \rho^2 (\gamma - \rho) \\
+&=
+(\gamma - \rho) \Big[ \gamma (\gamma + \rho) - 2 \rho^2 \Big] \\
+&=
+(\gamma - \rho) \Big[ \gamma^2 + \rho \gamma - 2 \rho^2 \Big] \\
+&=
+(\gamma - \rho) \Big[ (\gamma - \rho)(\gamma + 2 \rho) \Big] \\
+&=
+(\gamma - \rho)^2(\gamma + 2 \rho).
+\end{align*}
+$$
+A general pattern, perhaps, starts to emerge;
+it looks that
+$$
+\mathrm{det}(\mathbf{G}_n)
+= (\gamma - \rho)^{n - 1} \big( \gamma + (n - 1)\rho \big).
+$$
+Let's try using this in the recursive formula via induction:
+$$
+\begin{align*}
+\mathrm{det}(\mathbf{G}_{n + 1})
+&=
+\gamma
+\, \mathrm{det}(\mathbf{G}_n)
+- n \rho^2 (\gamma - \rho)^{n - 1} \\
+&=
+\gamma
+(\gamma - \rho)^{n - 1} \big( \gamma + (n - 1)\rho \big)
+- n \rho^2 (\gamma - \rho)^{n - 1} \\
+&=
+(\gamma - \rho)^{n - 1} \bigg[ \gamma \big( \gamma + (n - 1)\rho \big) - n \rho^2 \bigg] \\
+&=
+(\gamma - \rho)^{n - 1} \bigg[ \gamma^2 + (n - 1)\rho \gamma - n \rho^2 \bigg] \\
+&=
+(\gamma - \rho)^{n - 1} \bigg[ (\gamma - \rho) ( \gamma + n \rho ) \bigg] \\
+&=
+(\gamma - \rho)^{n} ( \gamma + n \rho ).
+\end{align*}
+$$
+Which shows our formula is correct.
+
+## Analyzing the eigenvalues
+
+After all that, we have
+$$
+\mathrm{det}(\mathbf{G}_n)
+= (\gamma - \rho)^{n - 1} \big( \gamma + (n - 1)\rho \big).
+$$
+This shows there are two unique roots:
+- $\gamma = \rho$ (with multiplicity $n - 1$).
+- $\gamma = -(n - 1) \rho$ (with multiplicity $1$).
+
+Solving back for the original eigenvalues, substituting $\gamma = 1 - \lambda$, we have:
+- $\lambda = 1 - \rho$ (with multiplicity $n - 1$).
+- $\lambda = 1 + (n - 1) \rho$ (with multiplicity $1$).
+
+Let's call the first eigenvalue $\lambda_1 = 1 - \rho$,
+and the second $\lambda_2 = 1 + (n - 1) \rho$.
+For $\mathbf{Q}$ to be PSD,
+we need both $\lambda_1 \ge 0$
+and $\lambda_2 \ge 0$.
+Solving for $\rho$ from each gives an interval for $\rho$:
+$$
+\begin{align*}
+% \rho &\le 1 \\
+% \rho &\ge - \frac{1}{n - 1}
+- \frac{1}{n - 1}
+\le \rho
+\le 1.
+\end{align*}
+$$
+As long as $\rho$ is within this interval,
+our approximation matrix $\mathbf{Q}_n$ is PSD.
