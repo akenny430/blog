@@ -518,8 +518,6 @@ and $\lambda_2 \ge 0$.
 Solving for $\rho$ from each gives an interval for $\rho$:
 $$
 \begin{align*}
-% \rho &\le 1 \\
-% \rho &\ge - \frac{1}{n - 1}
 - \frac{1}{n - 1}
 \le \rho
 \le 1.
@@ -527,3 +525,23 @@ $$
 $$
 As long as $\rho$ is within this interval,
 our approximation matrix $\mathbf{Q}_n$ is PSD.
+
+Correlations are always $\le 1$,
+so the upper bound is no problem.
+However, we can see the lower bound approaches $0$ as $n \to \infty$;
+the set of valid negative values of $\rho$ is very limited,
+especially for large $n$.
+Ideally, our approximation should be using a positive $\rho$,
+since that will *always* be PSD.
+
+## Verifying via computation
+
+For a given pair of $(n, \rho)$,
+we can compute the minimum eigenvalue of $\mathbf{Q}$.
+This is shown in the plot below:
+
+<h1 align="center">
+    <img src="./plot_min_eigenvalue.svg" alt="Plot of minimum eigenvalue of Q, given n and rho." width="100%",class="center"/>
+</h1>
+
+We can see how quickly the lower bound on $\rho$ goes to $0$.
